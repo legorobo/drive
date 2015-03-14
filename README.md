@@ -8,8 +8,10 @@ General Design
 Work Delegation
 ---------------
 Here are the tasks each programmer should focus on, along with the approximate date it should be completed by:
-* Antares - 
-* George - 
+* Antares - Goal setting - localization
+* George - Goal setting - localization
 * Ramu - 
-* Aaron - 
-* Alan - 
+* Aaron - General managment and goal setting - path finding
+* Alan - Maintence code - drive code
+* Harrison - Maintence code - drive code
+* Karina - Presentation/Notebook and goal setting - path finding
