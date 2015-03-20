@@ -192,5 +192,5 @@ def main(instructions):
 #			park()
 #			driveState = -1
 
-nodePath = [0,0,0,1,1,0,1,0,1,0,0,3,1,0,1,1,0,0,1,4,1,0,1,1,1,1,1,1,0,3] #List of instructions
+nodePath = [-90,-90,-90,0,0,-90,0,-90,0,-90,-90,'P',0,0,0,0,0,0,0,-90,'P',-90,0,0,0,-90,0,'P',0,-90,-90,0,0,-90,0,'E'] #List of instructions
 main(nodePath)
