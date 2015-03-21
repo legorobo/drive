@@ -102,7 +102,7 @@ def pointTurn(angle):
 
 
 #Method to drive forward
-def driveFoward(speed):
+def driveForward(speed):
 	a.run_forever(speed)
 	b.run_forever(speed)
 
@@ -250,7 +250,7 @@ def main(instructions):
 	driveForward(defaultSpeed)
 	driveState = 1;
 	while (len(instructions) != 0):
-		if (instructions.get(0) == 'P'):
+		if (instructions[0] == 'P'):
 			instructions.pop(0)
 			driveState = 2
 		if (instructions.get(0) == 'E'):
@@ -293,6 +293,7 @@ def calibrateMotors():
 def calibrateUS():
 	turnUS(360)
 
-turnUS(90)
-#nodePath = [-90,-90,0,'P',-90,0,0,0,0,-90,-90,90,'P',0,0,0,90,'P',0,0,-90,0,'E'] #List of instructions
-#main(nodePath)
+#gyro = GyroSensor(port=3)
+
+nodePath = [-90,-90,0,-90,-90,-90,'P',-90,-90,0,-90,0,'P',0,-90,0,0,-90,0,-90,-90,0,'P',0,0,-90,'E'] #List of instructions
+main(nodePath)
