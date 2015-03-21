@@ -65,6 +65,12 @@ def getColorL():
 def getColorR():
 	return colorR.rgb()
 
+def getColorLRaw():
+    return colorL.ref_raw()
+
+def getColorRRaw():
+    return colorR.ref_raw()
+
 def getGyro():
 	return gyro.ang()
 
