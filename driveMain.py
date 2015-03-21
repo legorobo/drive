@@ -16,8 +16,8 @@ colorL = ColorSensor(port=1)
 colorR = ColorSensor(port=2)
 gyro = GyroSensor(port=3)
 ultrasonic = UltrasonicSensor(port=4)
-USAngle = 0
-USDist = 2550			#Absolute amount to turn US 360 degrees
+global USAngle = 0
+global USDist = 2550			#Absolute amount to turn US 360 degrees
 
 #MotorInit
 def init_motor(motor):
@@ -37,16 +37,9 @@ c = Motor(port=Motor.PORT.C)
 init_motor(a)
 init_motor(b)
 init_motor(c)
-a.pulses_per_second_sp = 2000
-b.pulses_per_second_sp = 2000
-c.pulses_per_second_sp = 2000
-time.sleep(5)
-a.pulses_per_second_sp = 0
-b.pulses_per_second_sp = 0
-c.pulses_per_second_sp = 0
 defaultSpeed = 1000
 
-driveState = 0 	#driveState variable
+global driveState = 0 	#driveState variable
 				#-1 is get next instruction
 				#0 is turn left
 				#1 is go forward
@@ -238,8 +231,10 @@ def main(instructions):
 	driveState = 1;
 	while(len(instructions) != 0):
 		if(instructions.get(0) == 'P'):
+			instructions.pop(0)
 			driveState = 2
 		if(instructions.get(0) == 'E'):
+			instructions.pop(0)
 			driveState = 3
 		if(driveState == 0):					#Red Line state
 			redLineStraighten()
