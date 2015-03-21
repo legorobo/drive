@@ -103,6 +103,11 @@ class SensorsArray(object):
                 color = key
         return key
 
+    def get_left_color_name(self):
+
+
+    def get_right_color_name(self):
+
 
 # ------------------------------------------------------------------------
 
