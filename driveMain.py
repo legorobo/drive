@@ -100,10 +100,10 @@ def driveForwardDist(speed, dist):
 def driveCorrection():
 	if (colorL.color() == 'white'):
 		speed = b.pulses_per_second_sp
-		b.pulses_per_second_sp = speed*0.9
+		b.pulses_per_second_sp = speed * 0.9
 	elif (colorR.color() == 'white'):
 		speed = a.pulses_per_second_sp
-		a.pulses_per_second_sp = speed*0.9
+		a.pulses_per_second_sp = speed * 0.9
 	if (colorL.color() != 'white' and colorR.color() != 'white')
 		driveForward(defaultSpeed)
 
@@ -130,7 +130,7 @@ def checkCollision():
 	resetUSToZero()
 	turnUS(135)
 	for i in range(7):
-		turnUS(-15*(i))
+		turnUS(-15 * (i))
 		if (ultrasonic.dist_cm() >= 20):
 			return True;
 	return False
@@ -139,30 +139,30 @@ def checkCollision():
 def hugWallR(color):
 	if (colorR.color() == 'black'):
 		speedL = a.pulses_per_second_sp
-		if (speedL*1.05 <= defaultSpeed):
-			a.pulses_per_second_sp = speedL*1.1
+		if (speedL * 1.05 <= defaultSpeed):
+			a.pulses_per_second_sp = speedL * 1.1
 		speedR = b.pulses_per_second_sp
-		b.pulses_per_second_sp = speedR*0.95
+		b.pulses_per_second_sp = speedR * 0.95
 	if (colorR.color() == color || colorR.color() == 'yellow'):
 		speedR = b.pulses_per_second_sp
-		if (speedR*1.05 <= defaultSpeed):
-			b.pulses_per_second_sp = speedR*1.05
+		if (speedR * 1.05 <= defaultSpeed):
+			b.pulses_per_second_sp = speedR * 1.05
 		speedL = b.pulses_per_second_sp
-		b.pulses_per_second_sp = speedL*0.95
+		b.pulses_per_second_sp = speedL * 0.95
 
 def hugWallL(color):
 	if (colorL.color() == 'black'):
 		speedR = a.pulses_per_second_sp
-		if (speedR*1.05 <= defaultSpeed):
-			a.pulses_per_second_sp = speedR*1.1
+		if (speedR * 1.05 <= defaultSpeed):
+			a.pulses_per_second_sp = speedR * 1.1
 		speedL = b.pulses_per_second_sp
-		b.pulses_per_second_sp = speedL*0.95
+		b.pulses_per_second_sp = speedL * 0.95
 	if (colorL.color() == color || colorR.color() == 'yellow'):
 		speedL = b.pulses_per_second_sp
-		if (speedL*1.05 <= defaultSpeed):
-			b.pulses_per_second_sp = speedL*1.05
+		if (speedL * 1.05 <= defaultSpeed):
+			b.pulses_per_second_sp = speedL * 1.05
 		speedR = b.pulses_per_second_sp
-		b.pulses_per_second_sp = speedR*0.95
+		b.pulses_per_second_sp = speedR * 0.95
 
 def findPark():
 	hugWallR('white')
@@ -183,7 +183,7 @@ def findPark():
 	return 1
 
 def turnUS(angle):
-	c.run_position_limited((angle/360.0)*USDist,1000)
+	c.run_position_limited((angle/360.0) * USDist, 1000)
 	USAngle += angle
 	if (USAngle < 0)
 		USAngle += 360
@@ -199,7 +199,7 @@ def resetUSToZero():
 
 def scanPark():
 	for i in range(6):
-		turnUS(-15*(i+1))
+		turnUS(-15 * (i + 1))
 		if (ultrasonic.dist_cm >= 20):
 			return True;
 	return False
@@ -208,9 +208,9 @@ def park():
 	while (colorL.color() != 'blue'):
 			b.run_forever(defaultSpeed)
 		b.stop()
-		driveForwardDist(1000,17)
+		driveForwardDist(1000, 17)
 		time.sleep(4)
-		driveForwardDist(-1000,17)
+		driveForwardDist(-1000, 17)
 		pointTurn(-90)
 
 def exit():
@@ -221,7 +221,7 @@ def exit():
 		while (colorR.color() != 'red'):
 				b.run_forever(defaultSpeed)
 			b.stop()
-			driveForwardDist(1000,17)
+			driveForwardDist(1000, 17)
 		sys.exit(0);
 
 #Method to maintain the current drive state
@@ -268,10 +268,10 @@ def main(instructions):
 						#stay on road
 
 def calibrateMotors():
-	driveForwardDist(1000,20)
+	driveForwardDist(1000, 20)
 
 def calibrateUS():
 	turnUS(360)
 
-#nodePath = [-90,-90,-90,0,0,-90,0,-90,0,-90,-90,'P',0,0,0,0,0,0,0,-90,'P',-90,0,0,0,-90,0,'P',0,-90,-90,0,0,-90,0,'E'] #List of instructions
+#nodePath = [-90, -90, -90, 0, 0, -90, 0, -90, 0, -90, -90, 'P', 0, 0, 0, 0, 0, 0, 0, -90, 'P', -90, 0, 0, 0, -90, 0, 'P', 0, -90, -90, 0, 0, -90, 0, 'E'] #List of instructions
 #main(nodePath)
