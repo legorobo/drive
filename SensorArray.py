@@ -81,6 +81,9 @@ class SensorsArray(object):
                 color = key
         return key
 
+
+
+
     def get_calibrated_right_color(self):
         
         """
