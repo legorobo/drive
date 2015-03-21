@@ -8,16 +8,16 @@
 #
 # ------------------------------------------------------------------------
 
-from .ev3dev import LegoSensor, Motor
+from ev3.lego import LegoSensor, Motor, ColorSensor, GyroSensor, UltrasonicSensor
 import time
 
 #Sensor Init
-colorL = ColorSensor(port=0)
-colorR = ColorSensor(port=1)
-gyro = ColorSensor(port=2)
-ultrasonic = ColorSensor(port=3)
+colorL = ColorSensor(port=1)
+colorR = ColorSensor(port=2)
+gyro = GyroSensor(port=3)
+ultrasonic = UltrasonicSensor(port=4)
 USAngle = 0
-USDist = 360			#Absolute amount to turn US 360 degrees
+USDist = 2550			#Absolute amount to turn US 360 degrees
 
 #MotorInit
 def init_motor(motor):
@@ -138,7 +138,7 @@ def checkCollision():
 	turnUS(135)
 	for i in range(7):
 		turnUS(-15*(i))
-		if(ultrasonic.dist_cm >= 20):
+		if(ultrasonic.dist_cm() >= 20):
 			return True;
 	return False
 
@@ -190,7 +190,7 @@ def findPark():
 	return 1
 
 def turnUS(angle):
-	c.run_position_limited(100,(angle/360.0)*USDist)
+	c.run_position_limited((angle/360.0)*USDist,1000)
 	USAngle += angle
 	if(USAngle < 0)
 		USAngle += 360
@@ -261,7 +261,6 @@ def main(instructions):
 		else:
 			driveState = 0;
 
-
 				#0: at a node
 					#pause
 					#straighten up
@@ -273,25 +272,11 @@ def main(instructions):
 					#drive forward
 						#stay on road
 
+def calibrateMotors():
+	driveForwardDist(1000,20)
 
+def calibrateUS():
+	turnUS(360)
 
-#		if(driveState == -1):
-#			driveState = instructions.pop(0)
-#		elif(driveState == 0):
-#			redLine()
-#			turnLeft()
-#			driveState = -1
-#		elif(driveState == 1):
-#			redLine()
-#			goStraight()
-#			driveState = -1
-#		elif(driveState == 2):
-#			redLine()
-#			turnRight()
-#			driveState = -1
-#		elif(driveState == 3):
-#			park()
-#			driveState = -1
-
-nodePath = [-90,-90,-90,0,0,-90,0,-90,0,-90,-90,'P',0,0,0,0,0,0,0,-90,'P',-90,0,0,0,-90,0,'P',0,-90,-90,0,0,-90,0,'E'] #List of instructions
-main(nodePath)
+#nodePath = [-90,-90,-90,0,0,-90,0,-90,0,-90,-90,'P',0,0,0,0,0,0,0,-90,'P',-90,0,0,0,-90,0,'P',0,-90,-90,0,0,-90,0,'E'] #List of instructions
+#main(nodePath)
