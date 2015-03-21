@@ -16,6 +16,8 @@ colorL = ColorSensor(port=0)
 colorR = ColorSensor(port=1)
 gyro = ColorSensor(port=2)
 ultrasonic = ColorSensor(port=3)
+USAngle = 0
+USDist = 360			#Absolute amount to turn US 360 degrees
 
 #MotorInit
 def init_motor(motor):
@@ -103,35 +105,131 @@ def driveForwardDist(speed, dist):
 	b.run_position_limited(dist, speed)
 
 def driveCorrection():
-	if(colorL.color == 'white'):
+	if(colorL.color() == 'white'):
 		speed = b.pulses_per_second_sp
-		motor.pulses_per_second_sp = speed*9.0/10.0
-	elif(colorR.color == 'white'):
+		b.pulses_per_second_sp = speed*0.9
+	elif(colorR.color() == 'white'):
 		speed = a.pulses_per_second_sp
-		motor.pulses_per_second_sp = speed*9.0/10.0
-	if(colorL.color != 'white' and colorR.color != 'white')
+		a.pulses_per_second_sp = speed*0.9
+	if(colorL.color() != 'white' and colorR.color() != 'white')
 		driveForward(defaultSpeed)
 
 #Method to transition
 def redLineStraighten():
-	if(colorL.color == 'red'):
+	if(colorL.color() == 'red'):
 		a.stop()
 		while(colorR.color() != 'red'):
 			b.run_forever(defaultSpeed)
 		b.stop()
-	elif(colorR.color == 'red'):
+	elif(colorR.color() == 'red'):
 		b.stop()
 		while(colorR.color() != 'red'):
 			a.run_forever(defaultSpeed)
 		a.stop()
 	time.sleep(1)
 
-def atRedLine()
-	if(colorL.color == 'red' or colorR.color == 'red'):
+def atRedLine():
+	if(colorL.color() == 'red' or colorR.color() == 'red'):
 		return True
 
-def park():
+def checkCollision():
+	initialUSAngle = USAngle
+	resetUSToZero()
+	turnUS(135)
+	for i in range(7):
+		turnUS(-15*(i))
+		if(ultrasonic.dist_cm >= 20):
+			return True;
+	return False
 
+
+def hugWallR(color):
+	if(colorR.color() == 'black'):
+		speedL = a.pulses_per_second_sp
+		if(speedL*1.05 <= defaultSpeed):
+			a.pulses_per_second_sp = speedL*1.1
+		speedR = b.pulses_per_second_sp
+		b.pulses_per_second_sp = speedR*0.95
+	if(colorR.color() == color || colorR.color() == 'yellow'):
+		speedR = b.pulses_per_second_sp
+		if(speedR*1.05 <= defaultSpeed):
+			b.pulses_per_second_sp = speedR*1.05
+		speedL = b.pulses_per_second_sp
+		b.pulses_per_second_sp = speedL*0.95
+
+def hugWallL(color):
+	if(colorL.color() == 'black'):
+		speedR = a.pulses_per_second_sp
+		if(speedR*1.05 <= defaultSpeed):
+			a.pulses_per_second_sp = speedR*1.1
+		speedL = b.pulses_per_second_sp
+		b.pulses_per_second_sp = speedL*0.95
+	if(colorL.color() == color || colorR.color() == 'yellow'):
+		speedL = b.pulses_per_second_sp
+		if(speedL*1.05 <= defaultSpeed):
+			b.pulses_per_second_sp = speedL*1.05
+		speedR = b.pulses_per_second_sp
+		b.pulses_per_second_sp = speedR*0.95
+
+def findPark():
+	hugWallR('white')
+
+	if(colorR.color() = 'blue'):
+		a.stop()
+		b.stop()
+		time.sleep(4)
+	canParked = scanPark()
+	driveForward(defaultSpeed)
+	while(canParked == False):
+		if(colorR.color() == 'white'):
+			canParked = scanPark()
+		hugWallR('blue')
+	a.stop()
+	b.stop()
+	park()
+	return 1
+
+def turnUS(angle):
+	c.run_position_limited(100,(angle/360.0)*USDist)
+	USAngle += angle
+	if(USAngle < 0)
+		USAngle += 360
+	elif(USAngle > 360)
+		USAngle -= 360
+
+def resetUSToZero():
+	if(USAngle != 0):
+		if(USAngle > 180):
+			turnUS(-(360-USAngle)
+		else:
+			turnUS(360-USAngle)
+
+def scanPark():
+	for i in range(6):
+		turnUS(-15*(i+1))
+		if(ultrasonic.dist_cm >= 20):
+			return True;
+	return False
+
+def park():
+	while(colorL.color() != 'blue'):
+			b.run_forever(defaultSpeed)
+		b.stop()
+		driveForwardDist(1000,17)
+		time.sleep(4)
+		driveForwardDist(-1000,17)
+		pointTurn(-90)
+
+def exit():
+	hugWallL('white')
+	if(colorL.color() == 'red'):
+		a.stop()
+		b.stop()
+		while(colorR.color() != 'red'):
+				b.run_forever(defaultSpeed)
+			b.stop()
+			driveForwardDist(1000,17)
+		sys.exit(0);
 
 #Method to maintain the current drive state
 def main(instructions):
@@ -139,25 +237,28 @@ def main(instructions):
 	driveForward(defaultSpeed)
 	driveState = 1;
 	while(len(instructions) != 0):
-		sensorInput = getSensor()
+		if(instructions.get(0) == 'P'):
+			driveState = 2
+		if(instructions.get(0) == 'E'):
+			driveState = 3
 		if(driveState == 0):					#Red Line state
 			redLineStraighten()
-			driveForwardDist(defaultSpeed, 20)
-			pointTurn(instruct)
-			driveState = 1
+			rightOfWay = checkCollision()
+			if(rightOfWay):
+				driveForwardDist(defaultSpeed, 20)
+				pointTurn(instruct)
+				driveState = 1
 		if(driveState == 1):					#Drive down lane state
 			driveCorrection()
 		if(driveState == 2):					#Park Lane state 		!!!!
+			driveState = findPark()
 		if(driveState == 3):					#Exit Lane state 		!!!!
+			exit()
 
 
-		if(atRedLine())
+		if(atRedLine()):
 			instruct = instructions.pop(0)
-			if(instruct == 'P'):
-				driveState = 2
-			if(instruct == 'E'):
-				driveState = 3
-			else:
+		else:
 			driveState = 0;
 
 
